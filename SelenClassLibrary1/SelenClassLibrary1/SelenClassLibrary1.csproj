@@ -49,6 +49,7 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="Homework1.cs" />
         <Compile Include="MyFirstTests.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
     </ItemGroup>
