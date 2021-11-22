@@ -25,20 +25,20 @@ namespace SelenClassLibrary1
         {
             var cookiePolicyAgree = By.ClassName("cookie-policy__button");
             var booksMenu = By.CssSelector("[data-event-content='Книги']");
-            var allBooks = By.CssSelector("li[class='b-menu-second-item']>a[href='/books/']");
-            var addBookInCart = By.CssSelector(".products-row[data-title='Все в жанре «Книги»'] a[data-position='1']");
-            var issueOrder = By.CssSelector(".products-row[data-title='Все в жанре «Книги»'] a[data-position='1']");
+            var allBooks = By.CssSelector("[class='b-menu-second-item'] [href='/books/']");
+            var addBookInCart = By.XPath("(//a[contains(@id, 'buy')])[1]");
+            var issueOrder = By.XPath("(//a[contains(@id, 'buy') and text()='ОФОРМИТЬ'])[1]");
             var beginOrder = By.Id("basket-default-begin-order");
-            var chooseCourierDelivery = By.CssSelector("label[data-delivery-type-name=courier]>.b-radio-e-bg");
+            var chooseCourierDelivery = By.CssSelector("[data-delivery-type-name=courier] .b-radio-e-bg");
             var city = By.CssSelector(".b-form-input[data-suggeststype=district]");
             var street = By.CssSelector(".b-form-input[data-suggeststype=streets]");
             var building  = By.CssSelector(".b-form-input[name^=building]");
             var flat  = By.CssSelector(".b-form-input[name^=flat]");
-            var cityError = By.CssSelector(".b-form-e-row-m-district > span[id^=formvalidate-label");
+            var cityError = By.CssSelector(".b-form-e-row-m-district [id^=formvalidate-label");
             
             var suggestedCity  = By.CssSelector("a[id^=suggest]");
-            var confirm  = By.CssSelector("input[value=Готово]");
-            var courierDeliveryLightbox  = By.ClassName("js-dlform-wrap");
+            var confirm  = By.CssSelector(".responsive-children .js-dlform-wrap [value=Готово]");
+            var courierDeliveryLightbox  = By.CssSelector(".responsive-children .js-dlform-wrap");
         }
         
         [TearDown]
