@@ -21,7 +21,7 @@ namespace SelenClassLibrary1
         }
 
         [Test]
-        public void Locators()
+        public void LabirintTest()
         {
             var cookiePolicyAgree = By.ClassName("cookie-policy__button");
             var booksMenu = By.CssSelector("[data-event-content='Книги']");
@@ -30,6 +30,7 @@ namespace SelenClassLibrary1
             var issueOrder = By.XPath("(//a[contains(@id, 'buy') and text()='ОФОРМИТЬ'])[1]");
             var beginOrder = By.Id("basket-default-begin-order");
             var chooseCourierDelivery = By.CssSelector("[data-delivery-type-name=courier] .b-radio-e-bg");
+            
             var city = By.CssSelector(".b-form-input[data-suggeststype=district]");
             var street = By.CssSelector(".b-form-input[data-suggeststype=streets]");
             var building  = By.CssSelector(".b-form-input[name^=building]");
