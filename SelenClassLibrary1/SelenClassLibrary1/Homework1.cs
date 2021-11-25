@@ -68,11 +68,13 @@ namespace SelenClassLibrary1
             driver.FindElement(street).SendKeys("Малопрудная ул.");
             driver.FindElement(building).SendKeys("5");
             driver.FindElement(flat).SendKeys("600");
-
-            //wait.Until(ExpectedConditions.ElementIsVisible(driver.FindElement(loader)));
-            (driver as IJavaScriptExecutor)?.ExecuteScript(
-                $"$('[id='dp1637843263067']).datepicker('setDate','{DateTime.Today.AddDays(8).ToString("dd.MM.yyyy")}')");
-            //wait.Until(ExpectedConditions.ElementIsVisible(driver.FindElement(loader)));
+            var cal = By.ClassName("ui-datepicker-calendar");
+            
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loader));
+            (driver as IJavaScriptExecutor).ExecuteScript($"$('.js-delivery-date').datepicker('setDate','{DateTime.Today.AddDays(8).ToString("dd.MM.yyyy")}')");
+            // ставится на 30 ноября максимум, больше не смогла - руками тоже месяц не меняется
+            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loader));
+            //в новой версии нет, что использовать тогда?
             driver.FindElement(confirm).Click();
             Assert.That(driver.FindElement(courierDeliveryLightbox).Displayed == false);
         }
