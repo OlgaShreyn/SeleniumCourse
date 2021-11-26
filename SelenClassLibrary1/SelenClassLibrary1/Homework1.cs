@@ -45,7 +45,6 @@ namespace SelenClassLibrary1
             var confirm = By.CssSelector(".responsive-children .js-dlform-wrap [value=Готово]");
             var courierDeliveryLightbox = By.CssSelector(".responsive-children .js-dlform-wrap");
             var loader = By.ClassName("loading-panel-inner");
-            var d = By.Id("dp1637843263067");
 
             driver.FindElement(cookiePolicyAgree).Click();
             new Actions(driver)
@@ -68,7 +67,6 @@ namespace SelenClassLibrary1
             driver.FindElement(street).SendKeys("Малопрудная ул.");
             driver.FindElement(building).SendKeys("5");
             driver.FindElement(flat).SendKeys("600");
-            var cal = By.ClassName("ui-datepicker-calendar");
             
             wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loader));
             (driver as IJavaScriptExecutor).ExecuteScript($"$('.js-delivery-date').datepicker('setDate','{DateTime.Today.AddDays(8).ToString("dd.MM.yyyy")}')");
