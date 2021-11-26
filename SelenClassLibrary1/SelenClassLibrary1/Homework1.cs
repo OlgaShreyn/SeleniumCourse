@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Eventing.Reader;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -44,7 +45,7 @@ namespace SelenClassLibrary1
             var suggestedCity = By.CssSelector("a[id^=suggest]");
             var confirm = By.CssSelector(".responsive-children .js-dlform-wrap [value=Готово]");
             var courierDeliveryLightbox = By.CssSelector(".responsive-children .js-dlform-wrap");
-            var loader = By.ClassName("loading-panel-inner");
+            var loader = By.ClassName("loading-panel");
 
             driver.FindElement(cookiePolicyAgree).Click();
             new Actions(driver)
@@ -52,15 +53,15 @@ namespace SelenClassLibrary1
                 .Click(driver.FindElement(allBooks))
                 .Build()
                 .Perform();
-            Assert.That(driver.Url == "https://www.labirint.ru/books/");
+            Assert.AreEqual("https://www.labirint.ru/books/", driver.Url, "Перешли на неверную страницу");
             driver.FindElement(addBookInCart).Click();
             driver.FindElement(issueOrder).Click();
             driver.FindElement(beginOrder).Click();
             driver.FindElement(chooseCourierDelivery).Click();
             var cityElement = driver.FindElement(city);
             cityElement.SendKeys("lala");
-            cityElement.SendKeys("\t");
-            Assert.That(driver.FindElement(cityError).Displayed);
+            cityElement.SendKeys(Keys.Tab);
+            Assert.IsTrue(driver.FindElement(cityError).Displayed, "Не появилось сообщение об ошибке, что город недоступен");
             cityElement.Clear();
             cityElement.SendKeys("Екатеринбург");
             driver.FindElement(suggestedCity).Click();
@@ -70,11 +71,9 @@ namespace SelenClassLibrary1
             
             wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loader));
             (driver as IJavaScriptExecutor).ExecuteScript($"$('.js-delivery-date').datepicker('setDate','{DateTime.Today.AddDays(8).ToString("dd.MM.yyyy")}')");
-            // ставится на 30 ноября максимум, больше не смогла - руками тоже месяц не меняется
             wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loader));
-            //в новой версии нет, что использовать тогда?
             driver.FindElement(confirm).Click();
-            Assert.That(driver.FindElement(courierDeliveryLightbox).Displayed == false);
+            Assert.IsFalse(driver.FindElement(courierDeliveryLightbox).Displayed, "Лайтбокс оформления доставки не исчез");
         }
 
         [TearDown]
