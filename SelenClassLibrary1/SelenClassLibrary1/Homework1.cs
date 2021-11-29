@@ -1,86 +1,43 @@
-using System;
-using System.Diagnostics.Eventing.Reader;
 using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Support.UI;
+using SelenClassLibrary1.pages;
 
 namespace SelenClassLibrary1
 {
-    public class Homework1
+    public class Homework1:SeleniumTestBase
     {
-        private IWebDriver driver;
-        private WebDriverWait wait;
-
-        [SetUp]
-        public void SetUp()
+        [Test]
+        public void BasketPage_EnterInvalidCity_ErrorCity()
         {
-            var options = new ChromeOptions();
-            options.AddArgument("--start-maximized");
-            options.AddArgument("incognito");
-            driver = new ChromeDriver(options);
-            driver.Navigate().GoToUrl("https://www.labirint.ru/");
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+            var homePage = new HomePage(driver, wait);
+            homePage.OpenPage();
+            homePage.AddBookInCard();
+            
+            var basketPage = new BasketPage(driver, wait);
+            basketPage.ChooseCourierDelivery();
+            
+            var courierDeliveryLightbox = new CourierDeliveryLightbox(driver, wait);
+            courierDeliveryLightbox.EnterCity("Екург", false);
+            
+            Assert.IsTrue(courierDeliveryLightbox.IsVisibleErrorCity());
         }
 
         [Test]
-        public void LabirintTest()
+        public void BasketPage_FillAll_Success()
         {
-            var cookiePolicyAgree = By.ClassName("cookie-policy__button");
-            var booksMenu = By.CssSelector("[data-event-content='Книги']");
-            var allBooks = By.CssSelector("[class='b-menu-second-item'] [href='/books/']");
-            var addBookInCart = By.XPath("(//a[contains(@id, 'buy')])[1]");
-            var issueOrder = By.XPath("(//a[contains(@id, 'buy') and text()='ОФОРМИТЬ'])[1]");
-            var beginOrder = By.Id("basket-default-begin-order");
-            var chooseCourierDelivery = By.CssSelector("[data-delivery-type-name=courier] .b-radio-e-bg");
-
-            var city = By.CssSelector(".b-form-input[data-suggeststype=district]");
-            var street = By.CssSelector(".b-form-input[data-suggeststype=streets]");
-            var building = By.CssSelector(".b-form-input[name^=building]");
-            var flat = By.CssSelector(".b-form-input[name^=flat]");
-            var cityError = By.CssSelector(".b-form-e-row-m-district [id^=formvalidate-label");
-
-            var suggestedCity = By.CssSelector("a[id^=suggest]");
-            var confirm = By.CssSelector(".responsive-children .js-dlform-wrap [value=Готово]");
-            var courierDeliveryLightbox = By.CssSelector(".responsive-children .js-dlform-wrap");
-            var loader = By.ClassName("loading-panel");
-
-            driver.FindElement(cookiePolicyAgree).Click();
-            new Actions(driver)
-                .MoveToElement(driver.FindElement(booksMenu))
-                .Click(driver.FindElement(allBooks))
-                .Build()
-                .Perform();
-            Assert.AreEqual("https://www.labirint.ru/books/", driver.Url, "Перешли на неверную страницу");
-            driver.FindElement(addBookInCart).Click();
-            driver.FindElement(issueOrder).Click();
-            driver.FindElement(beginOrder).Click();
-            driver.FindElement(chooseCourierDelivery).Click();
-            var cityElement = driver.FindElement(city);
-            cityElement.SendKeys("lala");
-            cityElement.SendKeys(Keys.Tab);
-            Assert.IsTrue(driver.FindElement(cityError).Displayed, "Не появилось сообщение об ошибке, что город недоступен");
-            cityElement.Clear();
-            cityElement.SendKeys("Екатеринбург");
-            driver.FindElement(suggestedCity).Click();
-            driver.FindElement(street).SendKeys("Малопрудная ул.");
-            driver.FindElement(building).SendKeys("5");
-            driver.FindElement(flat).SendKeys("600");
+            var homePage = new HomePage(driver, wait);
+            homePage.OpenPage();
+            homePage.AddBookInCard();
             
-            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loader));
-            (driver as IJavaScriptExecutor).ExecuteScript($"$('.js-delivery-date').datepicker('setDate','{DateTime.Today.AddDays(8).ToString("dd.MM.yyyy")}')");
-            wait.Until(ExpectedConditions.InvisibilityOfElementLocated(loader));
-            driver.FindElement(confirm).Click();
-            Assert.IsFalse(driver.FindElement(courierDeliveryLightbox).Displayed, "Лайтбокс оформления доставки не исчез");
-        }
+            var basketPage = new BasketPage(driver, wait);
+            basketPage.ChooseCourierDelivery();
 
-        [TearDown]
-        public void TearDown()
-        {
-            driver.Quit();
-            driver = null;
+            var courierDeliveryLightbox = new CourierDeliveryLightbox(driver, wait);
+            courierDeliveryLightbox.EnterCity("Екaтеринбург");
+            courierDeliveryLightbox.AddAdress("Малопрудная ул.", "5", "600");
+            courierDeliveryLightbox.SetDate();
+            courierDeliveryLightbox.Confirm();
+            
+            Assert.IsFalse(courierDeliveryLightbox.IsVisibleLightBox());
         }
     }
 }
